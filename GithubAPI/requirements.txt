@@ -1,0 +1,3 @@
+- user can input commands rather than using full uri's.
+- api headers/usage information is loaded first and displayed to the user
+- continuous usage (program runs until exit)
