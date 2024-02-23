@@ -1,3 +1,8 @@
-- user can input commands rather than using full uri's.
-- api headers/usage information is loaded first and displayed to the user
-- continuous usage (program runs until exit)
+- user can input commands rather than using full uri's. - 50% done
+- api headers/usage information is loaded first and displayed to the user - cancelled, not necessary.
+- continuous usage (program runs until exit) - done
+
+- implement the /search/users endpoint.
+- add models for some objects (users, repositories)
+
+need to move all of this information to somewhere else :p
