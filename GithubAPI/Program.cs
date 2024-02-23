@@ -1,49 +1,93 @@
-﻿namespace GithubAPI
+﻿using Microsoft.Extensions.Logging;
+using System.Reflection;
+
+namespace GithubAPI
 {
     internal class Program
     {
-        private HttpClient _client;
+        // logging variables.
+        public static ILoggerFactory Factory;
+        private static ILogger _thisLogger;
 
-        private string _appName = "GitHubAPI-PortfolioApp";
-        private string _appVersion = "1.0";
-        private string _token = "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";
+        private static Dictionary<string, MethodInfo> _commandFunctions = new Dictionary<string, MethodInfo>();
 
-        private Uri _baseUri = new Uri("https://api.github.com");
+        private static string _tokenArg = "";
+        public static GitHubClient API;
 
+        // controls the loop flow.
         private bool _isRunning = false;
 
-        public Program()
+        /// <summary>
+        /// Instantiates a new <see cref="GitHubClient"/> API access point, using an optional token given at startup.
+        /// </summary>
+        /// <returns></returns>
+        private async Task Initialize()
         {
-            _client = new HttpClient();
-            _client.BaseAddress = new Uri("https://api.github.com");
-            _client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue(_appName, _appVersion));
-            _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Token", _token);
-
+            API = new GitHubClient(_tokenArg);
             _isRunning = true;
 
-            Initialize();
-            // Look into executing get's synchronously. we don't need to update any UI elements or run anything in paralell.
-            // API/general commands can be executed synchronously and can block the main thread.
+            while (_isRunning)
+            {
+                string command = Console.ReadLine().Trim();
+
+                if (!string.IsNullOrEmpty(command))
+                {
+                    if (_commandFunctions.TryGetValue(command, out MethodInfo function))
+                        function.Invoke(null, null);
+                }
+            }
         }
 
-        private void Initialize()
+        static async Task Main(string[] args)
         {
-            Console.WriteLine("Gathering token data...");
+            Factory = LoggerFactory.Create(
+                builder => builder
+                    .AddConsole()
+                    .SetMinimumLevel(LogLevel.Debug)
+            );
+            _thisLogger = Factory.CreateLogger<Program>();
+
+            // argument at index 0 should be the classic token if used.
+            if (args.Length == 1) _tokenArg = args[0];
+            else if (args.Length > 1)
+                _thisLogger.LogWarning("Arguments are greater than expected; cannot access the given API token, using default...");
+
+            if (!string.IsNullOrEmpty(_tokenArg))
+                _thisLogger.LogInformation("Using token: {0}", _tokenArg);
+
+            // load commands.
+            MethodInfo[] rawCmdFunctions = Assembly
+                .GetExecutingAssembly()
+                .GetTypes()
+                .SelectMany(t => t.GetMethods())
+                .Where(t => t.GetCustomAttribute(typeof(CommandAttribute), false) != null)
+                .ToArray();
+
+            for (int i = 0; i < rawCmdFunctions.Length; i++)
+            {
+                MethodInfo function = rawCmdFunctions[i];
+                CommandAttribute commandData = function.GetCustomAttribute(typeof(CommandAttribute), false) as CommandAttribute;
+
+                _commandFunctions.Add(commandData.Name.ToLower(), function);
+            }
+
+            _thisLogger.LogInformation("Loaded {0} command functions.", _commandFunctions.Count);
+
+            await new Program().Initialize();
+        }
+
+        /// <summary>
+        /// Simple http GET request to retrieve the limit infomration for this session.
+        /// </summary>
+        /// <returns></returns>
+        [Command("getapilimit", "Returns the API request limit for this token.")]
+        public static async Task Cmd_GetRequestLimit()
+        {
+            Dictionary<string, IEnumerable<string>> limitInformation = await API.GetAPILimit();
+
+            foreach (var pair in limitInformation)
+                Console.WriteLine($"{pair.Key}: {pair.Value.First()}");
             Console.WriteLine();
-
-            // how can this be standardized into a function?
-            var getResponseMessage = _client.GetAsync(_baseUri);
-            getResponseMessage.Wait();
-
-            var responseMsg = getResponseMessage.Result;
-
-            Console.WriteLine(responseMsg.Headers.FirstOrDefault(h => h.Key.Equals("X-RateLimit-Limit")).Value.ToArray()[0]);
-            Console.ReadLine();
-        }
-
-        static void Main(string[] args)
-        {
-            new Program();
         }
     }
 }
