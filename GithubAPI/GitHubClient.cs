@@ -19,7 +19,7 @@ namespace GithubAPI
         // setup data; appname, version and token are required (this is for non-authentication)
         private string _appName = "GitHubAPI-PortfolioApp";
         private string _appVersion = "1.0";
-        private string _token = "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";
+        private string _token = "my_token";
 
         public GitHubClient(string token = "")
         {
