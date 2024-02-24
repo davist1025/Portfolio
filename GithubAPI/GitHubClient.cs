@@ -1,8 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using GithubAPI.Model;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -54,6 +57,26 @@ namespace GithubAPI
             Dictionary<string, uint> limits = new Dictionary<string, uint>();
 
             return responseHeaders.Headers.Where(h => h.Key.ToLower().Contains("ratelimit")).ToDictionary();
+        }
+
+        /// <summary>
+        /// Returns a list of users based on the given search query.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public async Task<UserSearch> GetUserSearchQuery(string query)
+        {
+            HttpResponseMessage returnedQuery = await _client.GetAsync($"/search/users?q={query}");
+            if (returnedQuery.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                _thisLogger.LogError("Failed to search for users with query: {0}, status code returned: {1}", query, returnedQuery.StatusCode);
+                return null;
+            }
+
+            string queryResponse = await returnedQuery.Content.ReadAsStringAsync();
+            UserSearch uQuery = JsonConvert.DeserializeObject<UserSearch>(queryResponse);
+
+            return uQuery;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using GithubAPI.Model;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
 
 namespace GithubAPI
@@ -17,6 +18,8 @@ namespace GithubAPI
         // controls the loop flow.
         private bool _isRunning = false;
 
+        private static User[] _queriedUsers;
+
         /// <summary>
         /// Instantiates a new <see cref="GitHubClient"/> API access point, using an optional token given at startup.
         /// </summary>
@@ -28,12 +31,18 @@ namespace GithubAPI
 
             while (_isRunning)
             {
-                string command = Console.ReadLine().Trim();
+                string command = Console.ReadLine();
+                string[] parameters = command.Contains(' ') ? command.Split(' ') : new[] { command };
 
-                if (!string.IsNullOrEmpty(command))
+                if (!string.IsNullOrEmpty(parameters[0]))
                 {
-                    if (_commandFunctions.TryGetValue(command, out MethodInfo function))
-                        function.Invoke(null, null);
+                    if (_commandFunctions.TryGetValue(parameters[0], out MethodInfo function))
+                    {
+                        if (parameters.Length > 0)
+                            function.Invoke(null, parameters[1..]);
+                        else
+                            function.Invoke(null, null);
+                    }
                 }
             }
         }
@@ -88,6 +97,24 @@ namespace GithubAPI
             foreach (var pair in limitInformation)
                 Console.WriteLine($"{pair.Key}: {pair.Value.First()}");
             Console.WriteLine();
+        }
+
+        [Command("searchuser", "Returns an array of users based on criteria.")]
+        public static async Task Cmd_SearchUsers(string query)
+        {
+            UserSearch uQuery = await API.GetUserSearchQuery(query);
+
+            if (uQuery != null && uQuery.Count > 0)
+            {
+                _thisLogger.LogInformation($"Search query returned {uQuery.Count} results.");
+                _queriedUsers = uQuery.Users;
+            }
+        }
+
+        [Command("clear", "Clears the console window.")]
+        public static void Cmd_ClearConsole()
+        {
+            Console.Clear();
         }
     }
 }
