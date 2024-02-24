@@ -6,5 +6,11 @@ namespace TipoutCalculator
         {
             InitializeComponent();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            double totalPerEmployee = Convert.ToDouble(Convert.ToDouble(textBox_Tips.Text) / Convert.ToInt32(textBox_NoEmployees.Text));
+            textBox_Total.Text = $"${totalPerEmployee}";
+        }
     }
 }
