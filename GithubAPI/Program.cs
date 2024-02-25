@@ -111,6 +111,15 @@ namespace GithubAPI
             }
         }
 
+        [Command("getuser", "Returns information about a given user, if any exists.")]
+        public static async Task Cmd_GetUser(string username)
+        {
+            User uQuery = await API.GetUser(username);
+
+            if (uQuery != null)
+            Console.WriteLine($"Found user: {uQuery.Username} w/ an Id {uQuery.Id}");
+        }
+
         [Command("clear", "Clears the console window.")]
         public static void Cmd_ClearConsole()
         {

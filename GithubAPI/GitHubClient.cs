@@ -22,7 +22,7 @@ namespace GithubAPI
         // setup data; appname, version and token are required (this is for non-authentication)
         private string _appName = "GitHubAPI-PortfolioApp";
         private string _appVersion = "1.0";
-        private string _token = "my_token";
+        private string _token = "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";
 
         public GitHubClient(string token = "")
         {
@@ -77,6 +77,24 @@ namespace GithubAPI
             UserSearch uQuery = JsonConvert.DeserializeObject<UserSearch>(queryResponse);
 
             return uQuery;
+        }
+
+        /// <summary>
+        /// Returns a user based on the given username.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public async Task<User> GetUser(string username)
+        {
+            HttpResponseMessage returnedQuery = await _client.GetAsync($"/users/{username}");
+            if (returnedQuery.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                _thisLogger.LogError("Failed to locate a user with the name: {0}", username);
+                return null;
+            }
+
+            string response = await returnedQuery.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<User>(response);
         }
     }
 }
