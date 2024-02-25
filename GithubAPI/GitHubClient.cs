@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -22,7 +23,7 @@ namespace GithubAPI
         // setup data; appname, version and token are required (this is for non-authentication)
         private string _appName = "GitHubAPI-PortfolioApp";
         private string _appVersion = "1.0";
-        private string _token = "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";
+        private string _token = "my_token";
 
         public GitHubClient(string token = "")
         {
@@ -87,9 +88,9 @@ namespace GithubAPI
         public async Task<User> GetUser(string username)
         {
             HttpResponseMessage returnedQuery = await _client.GetAsync($"/users/{username}");
-            if (returnedQuery.StatusCode == System.Net.HttpStatusCode.NotFound)
+            if (returnedQuery.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                _thisLogger.LogError("Failed to locate a user with the name: {0}", username);
+                _thisLogger.LogError("Failed to search for the given user: {0}, status code returned: {1}", username, returnedQuery.StatusCode);
                 return null;
             }
 

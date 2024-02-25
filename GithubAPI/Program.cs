@@ -117,7 +117,7 @@ namespace GithubAPI
             User uQuery = await API.GetUser(username);
 
             if (uQuery != null)
-            Console.WriteLine($"Found user: {uQuery.Username} w/ an Id {uQuery.Id}");
+                Console.WriteLine($"Found user: {uQuery.Username} w/ an Id {uQuery.Id}");
         }
 
         [Command("clear", "Clears the console window.")]
