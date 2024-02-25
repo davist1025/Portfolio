@@ -45,7 +45,10 @@ namespace GithubAPI
             {
                 _thisLogger.LogCritical("A token has not been set, the bot cannot authenticate, closing...");
                 Environment.Exit(0);
-            }    
+            }
+
+            if (!_token.StartsWith("ghp_") || _token.Length < 40)
+                _thisLogger.LogWarning("The given token: {0} may not be authorized to access some endpoints.", _token);
         }
 
         /// <summary>
