@@ -46,8 +46,8 @@
             button_Submit = new Button();
             checkBox_Subscribe = new CheckBox();
             label9 = new Label();
-            comboBox1 = new ComboBox();
-            label10 = new Label();
+            comboBox_Service = new ComboBox();
+            label_ImpactHint = new Label();
             SuspendLayout();
             // 
             // label1
@@ -205,31 +205,31 @@
             label9.TabIndex = 19;
             label9.Text = "Service";
             // 
-            // comboBox1
+            // comboBox_Service
             // 
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Items.AddRange(new object[] { "Web", "Application", "Network" });
-            comboBox1.Location = new Point(278, 110);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(151, 28);
-            comboBox1.TabIndex = 20;
+            comboBox_Service.FormattingEnabled = true;
+            comboBox_Service.Items.AddRange(new object[] { "Web", "Application", "Network" });
+            comboBox_Service.Location = new Point(278, 110);
+            comboBox_Service.Name = "comboBox_Service";
+            comboBox_Service.Size = new Size(151, 28);
+            comboBox_Service.TabIndex = 20;
             // 
-            // label10
+            // label_ImpactHint
             // 
-            label10.AutoSize = true;
-            label10.Location = new Point(61, 152);
-            label10.Name = "label10";
-            label10.Size = new Size(26, 20);
-            label10.TabIndex = 21;
-            label10.Text = "(?)";
+            label_ImpactHint.AutoSize = true;
+            label_ImpactHint.Location = new Point(61, 152);
+            label_ImpactHint.Name = "label_ImpactHint";
+            label_ImpactHint.Size = new Size(26, 20);
+            label_ImpactHint.TabIndex = 21;
+            label_ImpactHint.Text = "(?)";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(540, 455);
-            Controls.Add(label10);
-            Controls.Add(comboBox1);
+            Controls.Add(label_ImpactHint);
+            Controls.Add(comboBox_Service);
             Controls.Add(label9);
             Controls.Add(checkBox_Subscribe);
             Controls.Add(button_Submit);
@@ -275,7 +275,7 @@
         private Button button_Submit;
         private CheckBox checkBox_Subscribe;
         private Label label9;
-        private ComboBox comboBox1;
-        private Label label10;
+        private ComboBox comboBox_Service;
+        private Label label_ImpactHint;
     }
 }
