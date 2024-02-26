@@ -1,0 +1,11 @@
+Allows a user to file a bug report with the following information:
+
+- First name
+- Email
+- Problem that occurs
+- Expected behavior
+- Steps to reproduce
+- Interruption state description (ex: UI, functionality (buttons not working, etc))
+
+Report data gets sent to any developer email address with the data being passed in JSON formatting.
+Users will also get a client-side copy of this JSON data that is loaded with the application to tell the user which reports they've made in the past.
