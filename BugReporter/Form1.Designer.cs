@@ -185,6 +185,7 @@
             button_Submit.TabIndex = 17;
             button_Submit.Text = "Submit";
             button_Submit.UseVisualStyleBackColor = true;
+            button_Submit.Click += button_Submit_Click;
             // 
             // checkBox_Subscribe
             // 
