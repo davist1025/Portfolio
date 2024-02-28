@@ -96,13 +96,26 @@ namespace BugReporter
                 +$"<b>Impact level: </b> {comboBox_Impact.SelectedItem}<br><br>"
                 +$"<b>Given result: </b> {richTextBox_Description.Text}<br><br>"
                 +$"<b>Expected result: </b> {richTextBox_Expected.Text}<br><br>"
-                +$"<b>User notes: </b> {richTextBox_Notes.Text}";
+                +$"<b>User notes: </b> {richTextBox_Notes.Text}<br/>";
+
+            builder.HtmlBody +=
+                    "<br/>"
+                    +"<b>Client requests:</b>";
+
+            // could these be moved to a checkbox list or other control?
+            if (checkBox_Subscribe.Checked)
+            {
+                builder.HtmlBody +=
+                    "<br/>"
+                    + "- <i>Subscribe to issue</i>";
+            }
+
             // todo: attach body above as json file.
             eMessage.Body = builder.ToMessageBody();
 
             using SmtpClient client = new SmtpClient();
             client.Connect("smtp.gmail.com", 465, true);
-            client.Authenticate(myEmail, "vgbp eyxi oqhk gxzw");
+            client.Authenticate(myEmail, _myAppPassword);
             client.Send(eMessage);
             client.Disconnect(true);
         }
