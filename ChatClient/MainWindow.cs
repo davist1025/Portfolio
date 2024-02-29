@@ -23,6 +23,13 @@ namespace ChatClient
             InitializeComponent();
 
             listView_Users.Items.Add(_username);
+
+            this.FormClosing += OnFormClosing;
+        }
+
+        private void OnFormClosing(object? sender, FormClosingEventArgs e)
+        {
+            Form1.NetworkManager.DisconnectAll();
         }
     }
 }

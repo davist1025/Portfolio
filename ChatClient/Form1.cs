@@ -7,7 +7,7 @@ namespace ChatClient
 {
     public partial class Form1 : Form
     {
-        private NetManager _manager;
+        public static NetManager NetworkManager;
         private EventBasedNetListener _listener;
         private NetPacketProcessor _packetProcessor;
 
@@ -15,6 +15,7 @@ namespace ChatClient
         {
             _packetProcessor = new NetPacketProcessor();
             _packetProcessor.SubscribeReusable<ClientSession, NetPeer>(ReadClientSession);
+            _packetProcessor.SubscribeReusable<ClientAuthenticateStatus, NetPeer>(ReadClientAuthenticateStatus);
 
             _listener = new EventBasedNetListener();
             _listener.PeerConnectedEvent += (peer) =>
@@ -29,13 +30,13 @@ namespace ChatClient
             };
             _listener.NetworkReceiveEvent += (peer, reader, channel, method) => _packetProcessor.ReadAllPackets(reader, peer);
 
-            _manager = new NetManager(_listener);
-            _manager.Start();
+            NetworkManager = new NetManager(_listener);
+            NetworkManager.Start();
 
             Task.Run(() =>
             {
                 while (true)
-                    _manager.PollEvents();
+                    NetworkManager.PollEvents();
             });
 
             InitializeComponent();
@@ -44,7 +45,7 @@ namespace ChatClient
         private void button_Connect_Click(object sender, EventArgs e)
         {
             toolStripStatusLabel_Status.Text = "Connecting...";
-            _manager.Connect("127.0.0.1", 27737, "");
+            NetworkManager.Connect("127.0.0.1", 27737, "");
         }
 
         private void ReadClientSession(ClientSession session, NetPeer peer)
@@ -55,6 +56,20 @@ namespace ChatClient
                 this.Hide();
                 new MainWindow(textBox_Username.Text, session.SessionId).Show();
             }));
+        }
+
+        private void ReadClientAuthenticateStatus(ClientAuthenticateStatus status, NetPeer peer)
+        {
+            toolStripStatusLabel_Status.Text = "Login failed!";
+
+            switch (status.State)
+            {
+                case ClientAuthenticateStatus.AuthState.UserAlreadyExists:
+                    MessageBox.Show("A user already exists with this username!", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    break;
+            }
+
+            peer.Disconnect();
         }
     }
 }
