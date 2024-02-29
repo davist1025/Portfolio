@@ -40,9 +40,11 @@ namespace ChatServer
         {
             Console.WriteLine($"{authentication.Username} is attempting authenticate (peer: {peer.Id})");
 
+            string newSessionId = Guid.NewGuid().ToString().Replace("-", "");
+
             // todo: check connected users for username.
             NetDataWriter writer = new NetDataWriter();
-            _packetProcessor.Write(writer, new ClientSession() { SessionId = Guid.NewGuid().ToString().Replace("-", "") });
+            _packetProcessor.Write(writer, new ClientSession() { SessionId = newSessionId });
             peer.Send(writer, DeliveryMethod.ReliableOrdered);
         }
 
