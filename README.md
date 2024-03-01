@@ -45,5 +45,5 @@ The following dependencies and the projects that require them are listed below:
    - Chat (client, server)
 - [MailKit](https://github.com/jstedfast/MailKit)
    - BugReporter
-- [Newtownsoft.JSON](https://www.newtonsoft.com/json) (13.0.3)
+- [Newtonsoft.JSON](https://www.newtonsoft.com/json) (13.0.3)
    - GithubAPI
