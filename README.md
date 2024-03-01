@@ -37,3 +37,9 @@ Technical challenges of this project include:
 - Basic arithmetic
 - LINQ
 - String manipulation
+
+# Dependencies
+The following dependencies and the projects that require them are listed below:
+
+- [LiteNetLib 1.2.0](https://github.com/RevenantX/LiteNetLib/releases/tag/v1.2.0)
+   - Chat (client, server)
