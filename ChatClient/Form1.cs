@@ -11,11 +11,14 @@ namespace ChatClient
         private EventBasedNetListener _listener;
         private NetPacketProcessor _packetProcessor;
 
+        private MainWindow _mainWindow;
+
         public Form1()
         {
             _packetProcessor = new NetPacketProcessor();
             _packetProcessor.SubscribeReusable<ClientSession, NetPeer>(ReadClientSession);
             _packetProcessor.SubscribeReusable<ClientAuthenticateStatus, NetPeer>(ReadClientAuthenticateStatus);
+            _packetProcessor.SubscribeReusable<ClientConnection, NetPeer>(ReadClientConnection);
 
             _listener = new EventBasedNetListener();
             _listener.PeerConnectedEvent += (peer) =>
@@ -54,7 +57,8 @@ namespace ChatClient
 
             this.Invoke(new Action(() => {
                 this.Hide();
-                new MainWindow(textBox_Username.Text, session.SessionId).Show();
+                _mainWindow = new MainWindow(textBox_Username.Text, session.SessionId);
+                _mainWindow.Show();
             }));
         }
 
@@ -70,6 +74,12 @@ namespace ChatClient
             }
 
             peer.Disconnect();
+        }
+
+        private void ReadClientConnection(ClientConnection connection, NetPeer peer)
+        {
+            var usersList = _mainWindow.Controls.Find("listView_Users", false).First() as ListBox;
+            usersList.Invoke(() => usersList.Items.Add(connection.Username));
         }
     }
 }

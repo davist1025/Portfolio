@@ -70,7 +70,16 @@ namespace ChatServer
                 peer.Tag = newChatUser;
                 Console.WriteLine($"{newChatUser.Username} has authenticated w/ session id: {newChatUser.SessionId}");
 
-                _packetProcessor.Write(writer, new ClientSession() { SessionId = newSessionId });
+                //var users = _manager.ConnectedPeerList.FindAll(p => !(p.Tag as ChatUser).SessionId.EqualsIgnoreCase(newSessionId)).ToArray();
+                //for (int i = 0; i < users.Length;i++)
+                //{
+                //    _packetProcessor.Write(writer, new ClientConnection() { Username = newChatUser.Username });
+                //    var user = users[i];
+                //    user.Send(writer, DeliveryMethod.ReliableOrdered);
+                //    writer.Reset();
+                //}
+
+                //_packetProcessor.Write(writer, new ClientSession() { SessionId = newSessionId });
             }
             peer.Send(writer, DeliveryMethod.ReliableOrdered);
         }

@@ -28,42 +28,47 @@
         /// </summary>
         private void InitializeComponent()
         {
-            listView_Users = new ListView();
             textBox_Input = new TextBox();
             richTextBox_Output = new RichTextBox();
+            listView_Users = new ListBox();
             SuspendLayout();
-            // 
-            // listView_Users
-            // 
-            listView_Users.Location = new Point(445, 24);
-            listView_Users.Name = "listView_Users";
-            listView_Users.Size = new Size(151, 315);
-            listView_Users.TabIndex = 0;
-            listView_Users.UseCompatibleStateImageBehavior = false;
             // 
             // textBox_Input
             // 
-            textBox_Input.Location = new Point(2, 312);
+            textBox_Input.BackColor = SystemColors.Window;
+            textBox_Input.BorderStyle = BorderStyle.FixedSingle;
+            textBox_Input.Location = new Point(2, 321);
             textBox_Input.Name = "textBox_Input";
             textBox_Input.Size = new Size(437, 27);
             textBox_Input.TabIndex = 1;
             // 
             // richTextBox_Output
             // 
+            richTextBox_Output.BackColor = SystemColors.Window;
             richTextBox_Output.Location = new Point(2, 24);
             richTextBox_Output.Name = "richTextBox_Output";
             richTextBox_Output.Size = new Size(437, 282);
             richTextBox_Output.TabIndex = 2;
             richTextBox_Output.Text = "";
             // 
+            // listView_Users
+            // 
+            listView_Users.BackColor = SystemColors.Window;
+            listView_Users.FormattingEnabled = true;
+            listView_Users.Location = new Point(445, 24);
+            listView_Users.Name = "listView_Users";
+            listView_Users.Size = new Size(139, 324);
+            listView_Users.TabIndex = 3;
+            // 
             // MainWindow
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.Control;
             ClientSize = new Size(596, 357);
+            Controls.Add(listView_Users);
             Controls.Add(richTextBox_Output);
             Controls.Add(textBox_Input);
-            Controls.Add(listView_Users);
             Name = "MainWindow";
             Text = "MainWindow";
             ResumeLayout(false);
@@ -71,9 +76,8 @@
         }
 
         #endregion
-
-        private ListView listView_Users;
         private TextBox textBox_Input;
         private RichTextBox richTextBox_Output;
+        private ListBox listView_Users;
     }
 }
