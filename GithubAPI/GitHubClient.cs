@@ -23,7 +23,7 @@ namespace GithubAPI
         // setup data; appname, version and token are required (this is for non-authentication)
         private string _appName = "GitHubAPI-PortfolioApp";
         private string _appVersion = "1.0";
-        private string _token = "my_token";
+        private string _token = "vkvk 10bl";
 
         public GitHubClient(string token = "")
         {
@@ -68,7 +68,7 @@ namespace GithubAPI
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        public async Task<UserSearch> GetUserSearchQuery(string query)
+        public async Task<UserSearch> GetUsers(string query)
         {
             HttpResponseMessage returnedQuery = await _client.GetAsync($"/search/users?q={query}");
             if (returnedQuery.StatusCode != System.Net.HttpStatusCode.OK)

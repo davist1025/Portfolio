@@ -22,7 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatServer", "ChatServer\Ch
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiteNetLib", "Lib\LiteNetLib-1.2.0\LiteNetLib\LiteNetLib.csproj", "{FD78168E-3599-40A2-B504-5A63C9E28E9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatShared", "ChatShared\ChatShared.csproj", "{D63D434B-55F7-4A87-8BBF-225573DEC76C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatShared", "ChatShared\ChatShared.csproj", "{D63D434B-55F7-4A87-8BBF-225573DEC76C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftServer", "MinecraftServer\MinecraftServer.csproj", "{328FE745-2DB7-41D2-ABEC-52D02B8F4B9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +60,10 @@ Global
 		{D63D434B-55F7-4A87-8BBF-225573DEC76C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D63D434B-55F7-4A87-8BBF-225573DEC76C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D63D434B-55F7-4A87-8BBF-225573DEC76C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{328FE745-2DB7-41D2-ABEC-52D02B8F4B9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{328FE745-2DB7-41D2-ABEC-52D02B8F4B9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{328FE745-2DB7-41D2-ABEC-52D02B8F4B9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{328FE745-2DB7-41D2-ABEC-52D02B8F4B9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

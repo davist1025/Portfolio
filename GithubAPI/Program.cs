@@ -1,6 +1,7 @@
 ﻿using GithubAPI.Model;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
+using System.Text;
 
 namespace GithubAPI
 {
@@ -100,9 +101,9 @@ namespace GithubAPI
         }
 
         [Command("searchuser", "Returns an array of users based on criteria.")]
-        public static async Task Cmd_SearchUsers(string query)
+        public static async Task Cmd_GetUsers(string query)
         {
-            UserSearch uQuery = await API.GetUserSearchQuery(query);
+            UserSearch uQuery = await API.GetUsers(query);
 
             if (uQuery != null && uQuery.Count > 0)
             {
@@ -117,7 +118,7 @@ namespace GithubAPI
             User uQuery = await API.GetUser(username);
 
             if (uQuery != null)
-                Console.WriteLine($"Found user: {uQuery.Username} w/ an Id {uQuery.Id}");
+                Console.WriteLine($"Found user: {uQuery.Username} ({uQuery.Url}) ");
         }
 
         [Command("clear", "Clears the console window.")]

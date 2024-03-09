@@ -27,6 +27,13 @@ namespace ChatClient
             this.FormClosing += OnFormClosing;
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+
+        }
+
         private void OnFormClosing(object? sender, FormClosingEventArgs e)
         {
             Form1.NetworkManager.DisconnectAll();
