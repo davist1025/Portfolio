@@ -13,7 +13,9 @@ namespace MinecraftServer.Network
         KEEPALIVE = 0x00,
         LOGIN = 0x01,
         HANDSHAKE = 0x02,
+        PLAYER_POSITION_LOOK = 0x0D,
 
+        CMSG_PLAYER_POSITION = 0x0B,
         CMSG_SERVERLIST = 0xFE,
 
         SMSG_SPAWN_POSITION = 0x06,
@@ -68,15 +70,7 @@ namespace MinecraftServer.Network
             else
             {
                 Console.WriteLine($"Unknown packet received: 0x{packetId.ToString("X2")}");
-
-                using MemoryStream newMemStr = new MemoryStream();
-                using PacketWriter writer = new PacketWriter(newMemStr);
-
-                writer.Write((byte)PacketTypes.SMSG_KICK);
-                writer.WriteString($"Unknown opcode received: 0x{packetId.ToString("X2")}");
-                writer.Flush();
-
-                NetworkManager.SendTo(ipPort, newMemStr.ToArray());
+                // should a disc. packet be sent here?
             }
         }
 

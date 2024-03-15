@@ -23,13 +23,11 @@ namespace MinecraftServer
         public static void HandleKeepAlive(PacketReader reader, string ipPort)
         {
             int generatedId = reader.ReadInt32();
+            Console.WriteLine($"{ipPort} sent keepalive: {generatedId}");
 
-            using MemoryStream discStr = new();
-            using PacketWriter writer = new(discStr);
-
-            writer.Write((byte)PacketTypes.KEEPALIVE);
+            using PacketWriter writer = new(PacketTypes.KEEPALIVE);
             writer.Write((int)new Random().Next(90000000));
-            NetworkManager.SendTo(ipPort, discStr.ToArray());
+            NetworkManager.SendTo(ipPort, writer.ToArray());
         }
 
         [Handler(PacketTypes.LOGIN)]
@@ -44,22 +42,16 @@ namespace MinecraftServer
 
             if (clientProtocolVersion != Protocol)
             {
-                using MemoryStream discStr = new();
-                using PacketWriter writer = new(discStr);
-
-                writer.Write((byte)PacketTypes.SMSG_KICK);
+                using PacketWriter writer = new(PacketTypes.SMSG_KICK);
                 writer.WriteString($"Invalid protocol version; given = {clientProtocolVersion}, expected = {Protocol}");
-                NetworkManager.SendTo(ipPort, discStr.ToArray());
+                NetworkManager.SendTo(ipPort, writer.ToArray());
                 return;
             }
 
             if (NetworkManager.TryGetUser(connectingUsername, out NetUser user))
             {
-                using MemoryStream loginStr = new();
-                using PacketWriter writer = new(loginStr);
+                using PacketWriter writer = new(PacketTypes.LOGIN);
                 user.EntityId = 1; // todo: generate an entity id (use EC/ECS?)
-
-                writer.Write((byte)PacketTypes.LOGIN);
                 writer.Write(user.EntityId);
                 writer.WriteString(""); // unused?
                 writer.WriteString("FLAT");
@@ -70,18 +62,15 @@ namespace MinecraftServer
                 writer.Write((sbyte)4); // max players.
                 writer.Flush();
 
-                NetworkManager.SendTo(user.Endpoint.ToString(), loginStr.ToArray());
+                NetworkManager.SendTo(user.Endpoint.ToString(), writer.ToArray());
 
-                using MemoryStream spawnStr = new();
-                using PacketWriter spawnWriter = new(spawnStr);
-
-                spawnWriter.Write((byte)PacketTypes.SMSG_SPAWN_POSITION);
+                using PacketWriter spawnWriter = new(PacketTypes.SMSG_SPAWN_POSITION);
                 spawnWriter.Write((int)117);
                 spawnWriter.Write((int)70);
                 spawnWriter.Write((int)-50);
                 spawnWriter.Flush();
 
-                NetworkManager.SendTo(user.Endpoint.ToString(), spawnStr.ToArray());
+                NetworkManager.SendTo(user.Endpoint.ToString(), spawnWriter.ToArray());
             }
         }
 
@@ -97,26 +86,56 @@ namespace MinecraftServer
             {
                 Console.WriteLine($"User tried to login using an already existing username!");
 
-                using MemoryStream newMemStr = new();
-                using PacketWriter writer = new(newMemStr);
-
-                writer.Write((byte)PacketTypes.SMSG_KICK);
+                using PacketWriter writer = new(PacketTypes.SMSG_KICK);
                 writer.WriteString($"User is already connected ({username})!");
                 writer.Flush();
 
-                NetworkManager.SendTo(ipPort, newMemStr.ToArray());
+                NetworkManager.SendTo(ipPort, writer.ToArray());
                 return;
             }
 
             NetUser newUser = NetworkManager.CreateUser(ipPort, username);
 
-            using MemoryStream handshakeStr = new MemoryStream();
-            using PacketWriter handshakeWriter = new PacketWriter(handshakeStr);
-            handshakeWriter.Write((byte)PacketTypes.HANDSHAKE);
+            using PacketWriter handshakeWriter = new PacketWriter(PacketTypes.HANDSHAKE);
+            //handshakeWriter.WriteString("ssesionId"); how should this be generated for "online" mode?
             handshakeWriter.WriteString($"-"); // "-" indicates offline-mode.
             handshakeWriter.Flush();
 
-            NetworkManager.SendTo(newUser.Endpoint.ToString(), handshakeStr.ToArray());
+            NetworkManager.SendTo(newUser.Endpoint.ToString(), handshakeWriter.ToArray());
+        }
+
+        [Handler(PacketTypes.CMSG_PLAYER_POSITION)]
+        public static void HandlePlayerPosition(PacketReader reader, string ipPort)
+        {
+            double x = reader.ReadDouble();
+            double y = reader.ReadDouble();
+            double stance = reader.ReadDouble();
+            double z = reader.ReadDouble();
+            bool isOnGround = reader.ReadBoolean();
+
+            Console.WriteLine($"{x}:{y}:{z}");
+        }
+
+        [Handler(PacketTypes.PLAYER_POSITION_LOOK)]
+        public static void HandlePlayerPositionAndLook(PacketReader reader, string ipPort)
+        {
+            double x = reader.ReadDouble();
+            double y = reader.ReadDouble();
+            double stance = reader.ReadDouble();
+            double z = reader.ReadDouble();
+            float yaw = reader.ReadSingle();
+            float pitch = reader.ReadSingle();
+            bool isOnGround = reader.ReadBoolean();
+
+            using var writer = new PacketWriter(PacketTypes.PLAYER_POSITION_LOOK);
+            writer.Write(x);
+            writer.Write(stance);
+            writer.Write(y);
+            writer.Write(z);
+            writer.Write(yaw);
+            writer.Write(pitch);
+            writer.Write(isOnGround);
+            NetworkManager.SendTo(ipPort, writer.ToArray());
         }
 
         [Handler(PacketTypes.CMSG_SERVERLIST)]

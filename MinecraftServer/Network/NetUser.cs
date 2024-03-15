@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,11 +37,12 @@ namespace MinecraftServer.Network
     public class NetUser
     {
         public IPEndPoint Endpoint { get; init; }
-        public string Username { get; private set; }
+        public string Username { get; init; }
         public int EntityId = 0;
         public Gamemode Mode { get; set; } = Gamemode.Survival;
         public Dimension Dimension { get; set; } = Dimension.Overworld;
         public Difficulty Difficulty { get; set; } = Difficulty.Peaceful;
+        public Vector3 Position { get; set; } = Vector3.Zero;
 
         public NetUser(string endPoint, string username)
         {

@@ -10,7 +10,10 @@ namespace MinecraftServer.Network
 {
     public class PacketWriter : BinaryWriter
     {
-        public PacketWriter(Stream stream) : base(stream) { }
+        public PacketWriter(PacketTypes packetId) : base(new MemoryStream())
+        {
+            Write((byte)packetId);
+        }
 
         // src: https://github.com/qwaxys/MultiProxyServer/blob/master/MultiProxy/Program.cs#L400
         public void WriteString(string message)
@@ -20,5 +23,7 @@ namespace MinecraftServer.Network
             byte[] b = Encoding.BigEndianUnicode.GetBytes(message);
             Write(a.Concat(b).ToArray());
         }
+
+        public byte[] ToArray() => (BaseStream as MemoryStream).ToArray();
     }
 }
